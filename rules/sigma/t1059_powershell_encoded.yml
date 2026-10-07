@@ -1,0 +1,36 @@
+title: PowerShell Encoded Command Execution
+id: a6f79f21-4b30-4b1e-8a78-c012deadbeef
+status: stable
+description: |
+    Detects PowerShell execution with encoded command arguments, which is frequently
+    used to obfuscate malicious scripts and bypass command-line logging.
+author: SecRuleKit Examples
+date: 2026-01-15
+modified: 2026-06-01
+references:
+    - https://attack.mitre.org/techniques/T1059/001/
+    - https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_powershell_exe
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - attack.defense_evasion
+    - attack.t1027
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+    selection_cli:
+        CommandLine|contains:
+            - '-EncodedCommand'
+            - '-encodedcommand'
+            - '-enc '
+            - '-ec '
+    condition: selection_img and selection_cli
+falsepositives:
+    - Legitimate administrative scripts using encoded commands
+    - Software installers that use PowerShell
+level: medium
